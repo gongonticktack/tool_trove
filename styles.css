@@ -252,6 +252,24 @@ main {
   color: var(--muted);
   margin-left: 8px;
 }
+.category-title {
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.category-title .cat-chevron {
+  display: inline-block;
+  margin-right: 8px;
+  font-size: 0.9rem;
+  color: var(--muted);
+  transition: transform 0.2s ease;
+}
+.cat-section.collapsed .category-title .cat-chevron {
+  transform: rotate(-90deg);
+}
+.cat-section.collapsed .cards {
+  display: none;
+}
 
 /* カード */
 .cards {

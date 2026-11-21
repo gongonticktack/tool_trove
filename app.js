@@ -240,6 +240,7 @@ function initPalette() {
 }
 
 let allTools = [];
+const collapsedCategories = new Set();
 
 async function fetchTools() {
   try {
@@ -342,9 +343,31 @@ function render() {
   }
 
   for (const [category, tools] of byCategory) {
-    const section = el("section");
-    const title = el("h2", "category-title", category);
+    const section = el("section", "cat-section");
+    if (collapsedCategories.has(category)) section.classList.add("collapsed");
+    const title = el("h2", "category-title");
+    title.appendChild(el("span", "cat-chevron", "▾"));
+    title.appendChild(document.createTextNode(category));
     title.appendChild(el("span", "cat-count", tools.length + "件"));
+    title.setAttribute("role", "button");
+    title.setAttribute("tabindex", "0");
+    title.setAttribute(
+      "aria-expanded",
+      collapsedCategories.has(category) ? "false" : "true"
+    );
+    const toggle = () => {
+      const nowCollapsed = section.classList.toggle("collapsed");
+      if (nowCollapsed) collapsedCategories.add(category);
+      else collapsedCategories.delete(category);
+      title.setAttribute("aria-expanded", nowCollapsed ? "false" : "true");
+    };
+    title.addEventListener("click", toggle);
+    title.addEventListener("keydown", (ev) => {
+      if (ev.key === "Enter" || ev.key === " ") {
+        ev.preventDefault();
+        toggle();
+      }
+    });
     section.appendChild(title);
     const grid = el("div", "cards");
     for (const t of tools) grid.appendChild(buildCard(t));
