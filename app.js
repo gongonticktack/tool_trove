@@ -187,8 +187,9 @@ function initPalette() {
     button.setAttribute("aria-expanded", "true");
   }
 
-  // 選択はその訪問中だけ有効（保存・復元はしない）
+  // 選択は sessionStorage に保存し、その訪問中（アプリ内移動）は引き継ぐ
   function selectPalette(index) {
+    try { sessionStorage.setItem('appPaletteIndex', String(index)); } catch (e) {}
     const palette = PALETTES[index];
     applyPalette(palette);
     [...buttonSwatch.children].forEach((seg, i) => {
@@ -235,8 +236,20 @@ function initPalette() {
     }
   });
 
-  // アクセスごとにランダムで1つ選ぶ（前回の選択は保存・復元しない）
-  selectPalette(Math.floor(Math.random() * PALETTES.length));
+  // ランダムに選び直すのはTOP画面のリロードと新規アクセスのときだけ。
+  // アプリ内移動では sessionStorage の選択を引き継ぐ（このサイトは単一ページ＝常にTOP画面扱い）
+  const navEntry = performance.getEntriesByType('navigation')[0];
+  const navType = navEntry ? navEntry.type : 'navigate';
+  const fromSameApp = !!document.referrer && document.referrer.startsWith(location.origin);
+  let savedPalette = null;
+  try { savedPalette = sessionStorage.getItem('appPaletteIndex'); } catch (e) {}
+  if (navType === 'reload' || !fromSameApp) savedPalette = null;
+  const savedIndex = savedPalette === null ? NaN : parseInt(savedPalette, 10);
+  if (Number.isInteger(savedIndex) && savedIndex >= 0 && savedIndex < PALETTES.length) {
+    selectPalette(savedIndex);
+  } else {
+    selectPalette(Math.floor(Math.random() * PALETTES.length));
+  }
 }
 
 let allTools = [];
