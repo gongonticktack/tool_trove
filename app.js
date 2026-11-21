@@ -160,16 +160,16 @@ function applyPalette(palette) {
   });
 }
 
-// パレットの4色ストライプ（41/26/18/15）のサンプル要素を作る
-function buildSwatch(palette) {
-  const swatch = el("span", "palette-swatch");
-  swatch.setAttribute("aria-hidden", "true");
+// パレットの4色を 41/26/18/15 の比率で並べたバー（ヘッダーのストライプと同じ形式）を作る
+function buildBar(palette) {
+  const bar = el("span", "palette-bar");
+  bar.setAttribute("aria-hidden", "true");
   for (const color of palette.colors) {
     const seg = document.createElement("span");
     seg.style.background = color;
-    swatch.appendChild(seg);
+    bar.appendChild(seg);
   }
-  return swatch;
+  return bar;
 }
 
 function initPalette() {
@@ -207,9 +207,11 @@ function initPalette() {
     item.setAttribute("role", "option");
     item.setAttribute("aria-selected", "false");
     item.tabIndex = -1;
-    item.appendChild(buildSwatch(palette));
-    item.appendChild(el("span", "palette-item-name", palette.name));
-    item.appendChild(el("span", "palette-check", "✓"));
+    const head = el("span", "palette-item-head");
+    head.appendChild(el("span", "palette-item-name", palette.name));
+    head.appendChild(el("span", "palette-check", "✓"));
+    item.appendChild(head);
+    item.appendChild(buildBar(palette));
     item.addEventListener("click", () => {
       selectPalette(i);
       closeMenu();

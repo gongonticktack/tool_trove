@@ -98,26 +98,38 @@ body {
   margin-left: auto;
   font-size: 0.8rem;
 }
-/* 4色ストライプのサンプル（41/26/18/15） */
+/* 4色バー（41/26/18/15）：ボタン内はミニバー、メニュー項目内は全幅バー */
 .palette-swatch {
   display: flex;
-  width: 68px;
-  height: 14px;
+  width: 112px;
+  height: 16px;
   border-radius: 4px;
   overflow: hidden;
   flex: none;
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
 }
-.palette-swatch > span:nth-child(1) { flex: 41; }
-.palette-swatch > span:nth-child(2) { flex: 26; }
-.palette-swatch > span:nth-child(3) { flex: 18; }
-.palette-swatch > span:nth-child(4) { flex: 15; }
+.palette-bar {
+  display: flex;
+  width: 100%;
+  height: 16px;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+.palette-swatch > span:nth-child(1),
+.palette-bar > span:nth-child(1) { flex: 41; }
+.palette-swatch > span:nth-child(2),
+.palette-bar > span:nth-child(2) { flex: 26; }
+.palette-swatch > span:nth-child(3),
+.palette-bar > span:nth-child(3) { flex: 18; }
+.palette-swatch > span:nth-child(4),
+.palette-bar > span:nth-child(4) { flex: 15; }
 .palette-menu {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
   z-index: 60;
-  min-width: 248px;
+  min-width: 272px;
   max-width: calc(100vw - 32px);
   max-height: 60vh;
   overflow-y: auto;
@@ -133,11 +145,17 @@ body {
 .palette-menu[hidden] { display: none; }
 .palette-item {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 10px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  padding: 9px 10px;
   border-radius: 8px;
   cursor: pointer;
+}
+.palette-item-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 .palette-item:hover,
 .palette-item:focus-visible {
