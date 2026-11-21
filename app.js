@@ -331,8 +331,6 @@ function render() {
   const f = currentFilters();
   const shown = allTools.filter((t) => matches(t, f));
 
-  document.getElementById("count-shown").textContent = shown.length;
-
   const groups = document.getElementById("groups");
   groups.innerHTML = "";
 
@@ -386,9 +384,6 @@ function render() {
 
 function initSummary() {
   document.getElementById("count-total").textContent = allTools.length;
-  document.getElementById("count-ok").textContent = allTools.filter(
-    (t) => t.verdict === "ok"
-  ).length;
   document.getElementById("count-categories").textContent = new Set(
     allTools.map((t) => t.category)
   ).size;
