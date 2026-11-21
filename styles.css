@@ -1,17 +1,23 @@
 /* 技術スタック
-   Color Hunt パレット: #264653 / #2A9D8F / #F4A261 / #E76F51
-   メイン #264653 / サブ #2A9D8F / アクセント #E76F51 / 背景は #F4A261 系から派生 */
+   配色は Color Hunt の4色パレットを JS（app.js の PALETTES）から
+   CSS変数へ適用して駆動する。パレット順の比重イメージは
+   メイン41% / サブ26% / ライト18% / アクセント15%（ヘッダーのストライプ）。
+   背景はパレットから導出し、最も明るい色を背景に固定しない。
+   :root の初期値は現行パレット #264653 / #2A9D8F / #F4A261 / #E76F51。 */
 :root {
   --main: #264653;
   --sub: #2a9d8f;
   --light: #f4a261;
   --accent: #e76f51;
+  --accent-text: #c24e33;
   --bg: #fbf6ec;
   --surface: #ffffff;
   --surface-muted: #f3ead9;
   --text: #264653;
   --muted: #5b7183;
   --border: #e0d5bf;
+  --on-main: #ffffff;
+  --header-sub: #cfe3de;
 }
 
 * { box-sizing: border-box; }
@@ -28,7 +34,7 @@ body {
 /* ヘッダー */
 .site-header {
   background: var(--main);
-  color: #fff;
+  color: var(--on-main);
 }
 .palette-stripe {
   display: flex;
@@ -50,7 +56,7 @@ body {
 }
 .header-sub {
   margin: 4px 0 0;
-  color: #cfe3de;
+  color: var(--header-sub);
   font-size: 0.95rem;
 }
 
@@ -118,7 +124,7 @@ main {
 }
 
 .status-msg {
-  color: var(--accent);
+  color: var(--accent-text);
   font-weight: 600;
 }
 
@@ -173,9 +179,18 @@ main {
   border-radius: 999px;
   white-space: nowrap;
 }
-.badge-ok { background: #d7edea; color: #17635a; }
-.badge-caution { background: #fbe7cf; color: #8f4b0d; }
-.badge-excluded { background: #f9dcd2; color: #9c3520; }
+.badge-ok {
+  background: color-mix(in srgb, var(--sub) 24%, var(--surface));
+  color: color-mix(in srgb, var(--sub) 55%, var(--text));
+}
+.badge-caution {
+  background: color-mix(in srgb, var(--light) 45%, var(--surface));
+  color: color-mix(in srgb, var(--accent-text) 65%, var(--text));
+}
+.badge-excluded {
+  background: color-mix(in srgb, var(--accent) 24%, var(--surface));
+  color: var(--accent-text);
+}
 
 .card-meta {
   display: flex;
