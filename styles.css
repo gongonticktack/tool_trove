@@ -48,6 +48,11 @@ body {
   max-width: 1080px;
   margin: 0 auto;
   padding: 28px 20px 24px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px 20px;
+  flex-wrap: wrap;
 }
 .header-inner h1 {
   margin: 0;
@@ -59,6 +64,95 @@ body {
   color: var(--header-sub);
   font-size: 0.95rem;
 }
+
+/* パレット切替（独自ドロップダウン） */
+.palette-dropdown {
+  position: relative;
+  flex: none;
+}
+.palette-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border: 1px solid color-mix(in srgb, var(--on-main) 45%, var(--main));
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--on-main) 14%, var(--main));
+  color: var(--on-main);
+  font: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+.palette-button:hover {
+  background: color-mix(in srgb, var(--on-main) 24%, var(--main));
+}
+.palette-button:focus-visible {
+  outline: 2px solid var(--on-main);
+  outline-offset: 2px;
+}
+.palette-button-name {
+  font-weight: 600;
+  white-space: nowrap;
+}
+.palette-caret {
+  margin-left: auto;
+  font-size: 0.8rem;
+}
+/* 4色ストライプのサンプル（41/26/18/15） */
+.palette-swatch {
+  display: flex;
+  width: 68px;
+  height: 14px;
+  border-radius: 4px;
+  overflow: hidden;
+  flex: none;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+.palette-swatch > span:nth-child(1) { flex: 41; }
+.palette-swatch > span:nth-child(2) { flex: 26; }
+.palette-swatch > span:nth-child(3) { flex: 18; }
+.palette-swatch > span:nth-child(4) { flex: 15; }
+.palette-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 60;
+  min-width: 248px;
+  max-width: calc(100vw - 32px);
+  max-height: 60vh;
+  overflow-y: auto;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+}
+.palette-menu[hidden] { display: none; }
+.palette-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.palette-item:hover,
+.palette-item:focus-visible {
+  background: var(--surface-muted);
+  outline: none;
+}
+.palette-item.is-selected { background: var(--surface-muted); }
+.palette-item-name { white-space: nowrap; }
+.palette-check {
+  margin-left: auto;
+  color: var(--sub);
+  font-weight: 700;
+  visibility: hidden;
+}
+.palette-item.is-selected .palette-check { visibility: visible; }
 
 main {
   max-width: 1080px;
@@ -229,4 +323,8 @@ footer {
 @media (max-width: 600px) {
   .cards { grid-template-columns: 1fr; }
   .header-inner h1 { font-size: 1.5rem; }
+  /* パレット切替はタイトルの下に全幅で置き、メニューが画面外にはみ出さないようにする */
+  .palette-dropdown { width: 100%; }
+  .palette-button { width: 100%; }
+  .palette-menu { min-width: 0; width: 100%; }
 }

@@ -160,22 +160,81 @@ function applyPalette(palette) {
   });
 }
 
+// パレットの4色ストライプ（41/26/18/15）のサンプル要素を作る
+function buildSwatch(palette) {
+  const swatch = el("span", "palette-swatch");
+  swatch.setAttribute("aria-hidden", "true");
+  for (const color of palette.colors) {
+    const seg = document.createElement("span");
+    seg.style.background = color;
+    swatch.appendChild(seg);
+  }
+  return swatch;
+}
+
 function initPalette() {
-  const select = document.getElementById("palette-select");
-  PALETTES.forEach((p, i) => {
-    const opt = document.createElement("option");
-    opt.value = String(i);
-    opt.textContent = p.name;
-    select.appendChild(opt);
+  const button = document.getElementById("palette-button");
+  const buttonSwatch = document.getElementById("palette-button-swatch");
+  const buttonName = document.getElementById("palette-button-name");
+  const menu = document.getElementById("palette-menu");
+
+  function closeMenu() {
+    menu.hidden = true;
+    button.setAttribute("aria-expanded", "false");
+  }
+  function openMenu() {
+    menu.hidden = false;
+    button.setAttribute("aria-expanded", "true");
+  }
+
+  // 選択はその訪問中だけ有効（保存・復元はしない）
+  function selectPalette(index) {
+    const palette = PALETTES[index];
+    applyPalette(palette);
+    [...buttonSwatch.children].forEach((seg, i) => {
+      if (palette.colors[i]) seg.style.background = palette.colors[i];
+    });
+    buttonName.textContent = palette.name;
+    [...menu.children].forEach((item, i) => {
+      const selected = i === index;
+      item.classList.toggle("is-selected", selected);
+      item.setAttribute("aria-selected", String(selected));
+    });
+  }
+
+  PALETTES.forEach((palette, i) => {
+    const item = el("li", "palette-item");
+    item.setAttribute("role", "option");
+    item.setAttribute("aria-selected", "false");
+    item.tabIndex = -1;
+    item.appendChild(buildSwatch(palette));
+    item.appendChild(el("span", "palette-item-name", palette.name));
+    item.appendChild(el("span", "palette-check", "✓"));
+    item.addEventListener("click", () => {
+      selectPalette(i);
+      closeMenu();
+      button.focus();
+    });
+    menu.appendChild(item);
   });
+
+  button.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (menu.hidden) openMenu();
+    else closeMenu();
+  });
+  // メニュー内のクリックで外側クリック判定にならないようにする
+  menu.addEventListener("click", (e) => e.stopPropagation());
+  document.addEventListener("click", closeMenu);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !menu.hidden) {
+      closeMenu();
+      button.focus();
+    }
+  });
+
   // アクセスごとにランダムで1つ選ぶ（前回の選択は保存・復元しない）
-  const initial = Math.floor(Math.random() * PALETTES.length);
-  select.value = String(initial);
-  applyPalette(PALETTES[initial]);
-  // プルダウンで選んだ場合はその訪問中だけ即時反映する
-  select.addEventListener("change", () => {
-    applyPalette(PALETTES[Number(select.value)]);
-  });
+  selectPalette(Math.floor(Math.random() * PALETTES.length));
 }
 
 let allTools = [];
