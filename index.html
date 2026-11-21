@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>技術スタック</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="palette-stripe" aria-hidden="true">
+    <span class="s1"></span><span class="s2"></span><span class="s3"></span><span class="s4"></span>
+  </div>
+  <div class="header-inner">
+    <h1>技術スタック</h1>
+    <p class="header-sub">3Dシミュレーション系 OSS レジストリ</p>
+  </div>
+</header>
+
+<main>
+  <section class="summary" id="summary" aria-label="集計">
+    <div class="summary-item"><span class="summary-num" id="count-total">–</span><span class="summary-label">ツール</span></div>
+    <div class="summary-item"><span class="summary-num" id="count-ok">–</span><span class="summary-label">商用OK</span></div>
+    <div class="summary-item"><span class="summary-num" id="count-categories">–</span><span class="summary-label">カテゴリ</span></div>
+    <div class="summary-item"><span class="summary-num" id="count-shown">–</span><span class="summary-label">表示中</span></div>
+  </section>
+
+  <section class="controls" aria-label="検索と絞り込み">
+    <input type="search" id="search" placeholder="検索（名前・概要・ライセンス）" autocomplete="off">
+    <select id="filter-category" aria-label="カテゴリ">
+      <option value="">カテゴリ：すべて</option>
+    </select>
+    <select id="filter-verdict" aria-label="判定">
+      <option value="">判定：すべて</option>
+      <option value="ok">商用OK</option>
+      <option value="caution">要確認</option>
+      <option value="excluded">対象外</option>
+    </select>
+  </section>
+
+  <p class="status-msg" id="status-msg" hidden></p>
+  <div id="groups"></div>
+</main>
+
+<footer>
+  <p>データ： Supabase（tech_stack_tools）</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
