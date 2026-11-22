@@ -228,6 +228,7 @@ main {
   font-size: 1rem;
   background: var(--surface);
   color: var(--text);
+  max-width: 100%;
 }
 .controls input:focus,
 .controls select:focus {
@@ -301,6 +302,8 @@ main {
   font-size: 1.15rem;
   font-weight: 700;
   margin: 0;
+  overflow-wrap: break-word;
+  min-width: 0;
 }
 .badge {
   font-size: 0.78rem;
