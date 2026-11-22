@@ -19,6 +19,9 @@ const STATUS_LABELS = {
 // vars:   役割（メイン/サブ/ライト/アクセント）と、パレットから導出した
 //         背景・面・文字色。暗いパレットは暗背景＋明文字、明るいパレットは
 //         明背景＋暗文字になるよう各パレットごとに定義する。
+// darkVars: 端末がダークモードのときだけ使う暗色版（明るいパレットにのみ定義）。
+//         ダークモードでは、元々暗いパレットは vars のまま表示し、明るい
+//         パレットだけ darkVars に切り替える（2026-11-22 Gomi指示）。
 const PALETTES = [
   {
     name: "Forest Teal",
@@ -29,6 +32,13 @@ const PALETTES = [
       bg: "#F4F8EC", surface: "#FFFFFF", surfaceMuted: "#E9F2DC",
       text: "#2E4A4F", muted: "#5F7A72", border: "#D5E2C4",
       onMain: "#FFFFFF", headerSub: "#DDEEDD",
+    darkVars: {
+      main: "#557B83", sub: "#39AEA9", light: "#A2D5AB", accent: "#E5EFC1",
+      accentText: "#A2D5AB",
+      bg: "#141F21", surface: "#1E2E30", surfaceMuted: "#283C3E",
+      text: "#E5EFC1", muted: "#9DB4A8", border: "#38504F",
+      onMain: "#FFFFFF", headerSub: "#DDEEDD",
+    },
     },
   },
   {
@@ -40,6 +50,13 @@ const PALETTES = [
       bg: "#FDFBEF", surface: "#FFFFFF", surfaceMuted: "#F6F7D7",
       text: "#3D3138", muted: "#7A6F72", border: "#EDE8C8",
       onMain: "#FFFFFF", headerSub: "#FFD9E4",
+    darkVars: {
+      main: "#D60F4C", sub: "#3EC1D3", light: "#F6F7D7", accent: "#FF9A00",
+      accentText: "#FF9A00",
+      bg: "#2B0A1B", surface: "#3A1124", surfaceMuted: "#48182F",
+      text: "#F6F7D7", muted: "#C4A3B2", border: "#5C2438",
+      onMain: "#FFFFFF", headerSub: "#FFD9E4",
+    },
     },
   },
   {
@@ -51,6 +68,13 @@ const PALETTES = [
       bg: "#FBF3E2", surface: "#FFFFFF", surfaceMuted: "#F6E7CB",
       text: "#01204E", muted: "#5A6B84", border: "#EAD9B8",
       onMain: "#FFFFFF", headerSub: "#C9D6E8",
+    darkVars: {
+      main: "#01204E", sub: "#35A5B5", light: "#F6DCAC", accent: "#FF7B25",
+      accentText: "#FF9A4D",
+      bg: "#020C20", surface: "#071A38", surfaceMuted: "#0C2547",
+      text: "#F6DCAC", muted: "#93A5BC", border: "#1E3A5F",
+      onMain: "#FFFFFF", headerSub: "#C9D6E8",
+    },
     },
   },
   {
@@ -73,6 +97,13 @@ const PALETTES = [
       bg: "#FBF1F2", surface: "#FFFFFF", surfaceMuted: "#F6E3E7",
       text: "#2E4258", muted: "#77687E", border: "#EBCFD6",
       onMain: "#FFFFFF", headerSub: "#D8C9D9",
+    darkVars: {
+      main: "#355C7D", sub: "#8A7699", light: "#C06C84", accent: "#F67280",
+      accentText: "#F98A97",
+      bg: "#131C26", surface: "#1F2C3B", surfaceMuted: "#2A3A4E",
+      text: "#F6DDE0", muted: "#A79FB2", border: "#3D4E63",
+      onMain: "#FFFFFF", headerSub: "#D8C9D9",
+    },
     },
   },
   {
@@ -95,6 +126,13 @@ const PALETTES = [
       bg: "#FAF3E7", surface: "#FFFFFF", surfaceMuted: "#F1E4CC",
       text: "#3E2C14", muted: "#7A6748", border: "#E4D3B0",
       onMain: "#FFFFFF", headerSub: "#E3D3B8",
+    darkVars: {
+      main: "#65451F", sub: "#B98D4F", light: "#EAC696", accent: "#C8AE7D",
+      accentText: "#EAC696",
+      bg: "#1D130A", surface: "#2B1D10", surfaceMuted: "#382714",
+      text: "#EAC696", muted: "#B39B78", border: "#4A3520",
+      onMain: "#FFFFFF", headerSub: "#E3D3B8",
+    },
     },
   },
   {
@@ -106,6 +144,13 @@ const PALETTES = [
       bg: "#FFFDF5", surface: "#FFFFFF", surfaceMuted: "#FDF6E3",
       text: "#4A3540", muted: "#8A7280", border: "#F3DCE6",
       onMain: "#5B3A4A", headerSub: "#7A5568",
+    darkVars: {
+      main: "#FFD5E5", sub: "#3EC9A7", light: "#FFFFDD", accent: "#81F5FF",
+      accentText: "#81F5FF",
+      bg: "#26121E", surface: "#331A29", surfaceMuted: "#402233",
+      text: "#FFFFDD", muted: "#C0A3B4", border: "#57324A",
+      onMain: "#5B3A4A", headerSub: "#7A5568",
+    },
     },
   },
   {
@@ -117,6 +162,13 @@ const PALETTES = [
       bg: "#FAF4E6", surface: "#FFFFFF", surfaceMuted: "#F1E5CB",
       text: "#283618", muted: "#6B7256", border: "#E3D3AC",
       onMain: "#FFFFFF", headerSub: "#D8DCC3",
+    darkVars: {
+      main: "#283618", sub: "#7C8C4C", light: "#DDA15E", accent: "#D97F33",
+      accentText: "#DDA15E",
+      bg: "#131B0B", surface: "#1E2A12", surfaceMuted: "#28361A",
+      text: "#EBC088", muted: "#A3A884", border: "#3D4A26",
+      onMain: "#FFFFFF", headerSub: "#D8DCC3",
+    },
     },
   },
   {
@@ -128,6 +180,13 @@ const PALETTES = [
       bg: "#F4F7F7", surface: "#FFFFFF", surfaceMuted: "#E4EBEC",
       text: "#25343F", muted: "#66727B", border: "#D3DCDE",
       onMain: "#FFFFFF", headerSub: "#C3CED4",
+    darkVars: {
+      main: "#25343F", sub: "#6E8FA1", light: "#EAEFEF", accent: "#FF9B51",
+      accentText: "#FF9B51",
+      bg: "#10181D", surface: "#1B2830", surfaceMuted: "#24333D",
+      text: "#EAEFEF", muted: "#93A5AE", border: "#33454F",
+      onMain: "#FFFFFF", headerSub: "#C3CED4",
+    },
     },
   },
 ];
@@ -148,10 +207,26 @@ const PALETTE_VAR_KEYS = {
   headerSub: "--header-sub",
 };
 
+const darkModeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+let activePalette = null;
+
+// ダークモード時は、明るいパレットだけ darkVars（暗色版）に切り替える。
+// 元々暗いパレット（darkVars を持たない）はそのまま使う。
+function effectiveVars(palette) {
+  if (darkModeQuery.matches && palette.darkVars) return palette.darkVars;
+  return palette.vars;
+}
+
+darkModeQuery.addEventListener("change", () => {
+  if (activePalette) applyPalette(activePalette);
+});
+
 function applyPalette(palette) {
+  activePalette = palette;
+  const vars = effectiveVars(palette);
   const root = document.documentElement;
   for (const [key, cssVar] of Object.entries(PALETTE_VAR_KEYS)) {
-    root.style.setProperty(cssVar, palette.vars[key]);
+    root.style.setProperty(cssVar, vars[key]);
   }
   // ストライプはパレット本来の4色をそのまま使う
   const stripe = document.querySelectorAll(".palette-stripe > span");
