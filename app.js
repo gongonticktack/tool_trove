@@ -3,7 +3,6 @@
 const VERDICT_LABELS = {
   ok: "商用OK",
   caution: "要確認",
-  excluded: "対象外",
 };
 
 const STATUS_LABELS = {
