@@ -298,6 +298,7 @@ function el(tag, className, text) {
 
 function buildCard(tool) {
   const card = el("article", "card verdict-" + (tool.verdict || "ok"));
+  card.dataset.tool = tool.name;
 
   const head = el("div", "card-head");
   head.appendChild(el("h3", "card-name", tool.name));
@@ -365,6 +366,7 @@ function render() {
 
   for (const [category, tools] of byCategory) {
     const section = el("section", "cat-section");
+    section.dataset.category = category;
     if (collapsedCategories.has(category)) section.classList.add("collapsed");
     const title = el("h2", "category-title");
     title.appendChild(el("span", "cat-chevron", "▾"));
@@ -403,6 +405,108 @@ function render() {
   } else {
     msg.hidden = true;
   }
+
+  buildToc(byCategory, shown);
+}
+
+/* ===== 探検マップ（遊び心のある目次） =====
+   カテゴリを「エリア」として並べ、タップでそのエリアへジャンプ。
+   スクロールに合わせて現在地のエリアが光る（スクロールスパイ）。
+   「おまかせジャンプ」は表示中のツールから1件をランダムに選び、
+   コンパスを回しながらそのカードへ飛んで点滅させる。 */
+let lastShown = [];
+let tocObserver = null;
+let compassDeg = 0;
+
+function findSection(category) {
+  return document.querySelector(
+    '.cat-section[data-category="' + CSS.escape(category) + '"]'
+  );
+}
+
+function expandCategory(category) {
+  if (!collapsedCategories.has(category)) return;
+  collapsedCategories.delete(category);
+  const section = findSection(category);
+  if (section) {
+    section.classList.remove("collapsed");
+    const title = section.querySelector(".category-title");
+    if (title) title.setAttribute("aria-expanded", "true");
+  }
+}
+
+function jumpToCategory(category) {
+  expandCategory(category);
+  const section = findSection(category);
+  if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function buildToc(byCategory, shown) {
+  lastShown = shown;
+  const nav = document.getElementById("toc");
+  const chips = document.getElementById("toc-chips");
+  const sub = document.getElementById("toc-sub");
+  if (!nav || !chips) return;
+  nav.hidden = shown.length === 0;
+  chips.innerHTML = "";
+  sub.textContent = "全" + byCategory.size + "エリア・" + shown.length + "ツール";
+
+  const chipByCategory = new Map();
+  for (const [category, tools] of byCategory) {
+    const chip = el("button", "toc-chip");
+    chip.type = "button";
+    chip.appendChild(el("span", "toc-chip-name", category));
+    chip.appendChild(el("span", "toc-chip-count", String(tools.length)));
+    chip.addEventListener("click", () => jumpToCategory(category));
+    chips.appendChild(chip);
+    chipByCategory.set(category, chip);
+  }
+
+  if (tocObserver) tocObserver.disconnect();
+  tocObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        const cat = entry.target.dataset.category;
+        for (const [c, chip] of chipByCategory) {
+          chip.classList.toggle("is-here", c === cat);
+        }
+      }
+    },
+    { rootMargin: "-15% 0px -70% 0px" }
+  );
+  document
+    .querySelectorAll(".cat-section[data-category]")
+    .forEach((s) => tocObserver.observe(s));
+}
+
+function initToc() {
+  const dice = document.getElementById("toc-dice");
+  const hit = document.getElementById("toc-hit");
+  const compass = document.getElementById("toc-compass");
+  if (!dice) return;
+  dice.addEventListener("click", () => {
+    if (lastShown.length === 0) return;
+    const tool = lastShown[Math.floor(Math.random() * lastShown.length)];
+    compassDeg += 360 + Math.floor(Math.random() * 360);
+    if (compass) compass.style.transform = "rotate(" + compassDeg + "deg)";
+    expandCategory(tool.category);
+    const card = document.querySelector(
+      '.card[data-tool="' + CSS.escape(tool.name) + '"]'
+    );
+    if (card) {
+      card.scrollIntoView({ behavior: "smooth", block: "center" });
+      card.classList.remove("toc-flash");
+      void card.offsetWidth;
+      card.classList.add("toc-flash");
+      setTimeout(() => card.classList.remove("toc-flash"), 2000);
+    }
+    if (hit) {
+      hit.textContent =
+        "「" + tool.name + "」（" + tool.category + "）に着陸！";
+      hit.hidden = false;
+    }
+  });
 }
 
 function initSummary() {
@@ -432,6 +536,7 @@ async function init() {
   }
   initSummary();
   render();
+  initToc();
 
   document.getElementById("search").addEventListener("input", render);
   document.getElementById("filter-category").addEventListener("change", render);

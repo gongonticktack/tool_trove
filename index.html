@@ -46,6 +46,20 @@
     </select>
   </section>
 
+  <nav class="toc" id="toc" aria-label="目次">
+    <div class="toc-head">
+      <span class="toc-compass" id="toc-compass" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 5 L14.5 12 L12 19 L9.5 12 Z" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg></span>
+      <span class="toc-title">探検マップ</span>
+      <span class="toc-sub" id="toc-sub"></span>
+      <button type="button" class="toc-dice" id="toc-dice">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4" fill="currentColor" opacity="0.3"/><circle cx="8.5" cy="8.5" r="1.8" fill="currentColor"/><circle cx="15.5" cy="8.5" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="8.5" cy="15.5" r="1.8" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.8" fill="currentColor"/></svg>
+        おまかせジャンプ
+      </button>
+    </div>
+    <div class="toc-chips" id="toc-chips"></div>
+    <p class="toc-hit" id="toc-hit" hidden></p>
+  </nav>
+
   <p class="status-msg" id="status-msg" hidden></p>
   <div id="groups"></div>
 </main>

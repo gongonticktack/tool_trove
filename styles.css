@@ -359,6 +359,124 @@ footer {
   font-size: 0.85rem;
 }
 
+/* 探検マップ（目次） */
+.toc {
+  background: var(--surface);
+  border: 2px dashed color-mix(in srgb, var(--sub) 55%, var(--border));
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+.toc[hidden] { display: none; }
+.toc-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.toc-compass {
+  width: 26px;
+  height: 26px;
+  flex: none;
+  display: inline-flex;
+  color: var(--accent-text);
+  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.3, 1.2);
+}
+.toc-compass svg { width: 100%; height: 100%; }
+.toc-title { font-weight: 700; font-size: 1.05rem; }
+.toc-sub { color: var(--muted); font-size: 0.85rem; }
+.toc-dice {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 999px;
+  background: var(--main);
+  color: var(--on-main);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.toc-dice:hover { filter: brightness(1.15); }
+.toc-dice:focus-visible {
+  outline: 2px solid var(--sub);
+  outline-offset: 2px;
+}
+.toc-dice svg { width: 18px; height: 18px; flex: none; }
+.toc-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.toc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 8px 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-muted);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+.toc-chip:nth-child(odd) { transform: rotate(-1.2deg); }
+.toc-chip:nth-child(even) { transform: rotate(1deg); }
+.toc-chip:hover { transform: rotate(0deg) scale(1.05); }
+.toc-chip:focus-visible {
+  outline: 2px solid var(--sub);
+  outline-offset: 2px;
+}
+.toc-chip-count {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--sub) 24%, var(--surface));
+  color: color-mix(in srgb, var(--sub) 55%, var(--text));
+}
+.toc-chip.is-here {
+  background: var(--main);
+  color: var(--on-main);
+  transform: rotate(0deg) scale(1.05);
+}
+.toc-chip.is-here::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex: none;
+  animation: toc-pulse 1.2s ease-in-out infinite;
+}
+.toc-chip.is-here .toc-chip-count {
+  background: color-mix(in srgb, var(--on-main) 28%, transparent);
+  color: var(--on-main);
+}
+@keyframes toc-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.75); }
+}
+.toc-hit {
+  margin: 12px 0 0;
+  font-weight: 700;
+  color: var(--accent-text);
+}
+.cat-section { scroll-margin-top: 16px; }
+.card { scroll-margin-top: 16px; }
+.card.toc-flash { animation: toc-flash 1.8s ease; }
+@keyframes toc-flash {
+  0%, 100% { box-shadow: 0 0 0 0 transparent; }
+  20% { box-shadow: 0 0 0 5px var(--accent); }
+  45% { box-shadow: 0 0 0 2px var(--accent); }
+  70% { box-shadow: 0 0 0 5px var(--accent); }
+}
+
 @media (max-width: 600px) {
   .cards { grid-template-columns: 1fr; }
   .header-inner h1 { font-size: 1.5rem; }
