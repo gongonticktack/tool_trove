@@ -410,8 +410,68 @@ footer {
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 12px;
+  position: relative;
+}
+/* 街と街を結ぶ道 */
+#toc-road {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+#toc-road .road-base {
+  fill: none;
+  stroke: color-mix(in srgb, var(--muted) 38%, transparent);
+  stroke-width: 11;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+#toc-road .road-line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-dasharray: 7 7;
+  stroke-linejoin: round;
+}
+.toc-region-label {
+  flex: 0 0 100%;
+  position: relative;
+  z-index: 1;
+  margin-top: 10px;
+}
+.toc-region-label.is-first { margin-top: 0; }
+.toc-region-label-text {
+  background: var(--surface);
+  padding: 2px 8px 2px 2px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--accent-text);
+}
+.toc-stop {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--main);
+  color: var(--on-main);
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+.toc-chip.is-here .toc-stop {
+  background: var(--on-main);
+  color: var(--main);
 }
 .toc-chip {
+  position: relative;
+  z-index: 1;
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -467,6 +527,35 @@ footer {
   font-weight: 700;
   color: var(--accent-text);
 }
+/* 地方見出し（標識＋道路） */
+.region-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 38px 0 0;
+}
+#groups > .region-heading:first-child { margin-top: 4px; }
+.region-plate {
+  background: var(--main);
+  color: var(--on-main);
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 6px 14px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+.region-road {
+  flex: 1;
+  min-width: 40px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: color-mix(in srgb, var(--muted) 28%, transparent);
+  background-image: repeating-linear-gradient(90deg, var(--accent) 0 12px, transparent 12px 24px);
+  background-size: 100% 2px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
 .cat-section { scroll-margin-top: 16px; }
 .card { scroll-margin-top: 16px; }
 .card.toc-flash { animation: toc-flash 1.8s ease; }

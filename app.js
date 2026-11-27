@@ -351,6 +351,67 @@ function matches(tool, f) {
   return true;
 }
 
+/* 地方（クラスタ）定義：似た技術の「街」（カテゴリ）を地方ごとにまとめ、
+   探検マップでも本文でもこの順に並べる。未分類のカテゴリは最後の地方へ。 */
+const CLUSTERS = [
+  {
+    name: "3D・ビジョン地方",
+    categories: [
+      "3D再構成・点群",
+      "3D生成AI",
+      "メッシュ修復・最適化",
+      "モデリング・編集",
+      "リギング・アニメーション",
+      "シーン基盤・デジタルツイン",
+      "画像認識・セグメンテーション",
+    ],
+  },
+  {
+    name: "ロボット・物理地方",
+    categories: [
+      "ロボットシミュレーション",
+      "ロボット制御・ヒューマノイド",
+      "物理エンジン",
+      "SLAM・自己位置推定",
+      "最適化・経路計画",
+      "CAE（流体・熱・構造）",
+    ],
+  },
+  {
+    name: "AI・データ地方",
+    categories: [
+      "ローカルLLM・AI基盤",
+      "世界モデル・動画生成",
+      "強化学習",
+      "アノテーション・推論基盤",
+      "OCR・文書AI",
+      "音声AI",
+    ],
+  },
+  {
+    name: "自動化・開発地方",
+    categories: ["RPA・業務自動化", "自動テスト"],
+  },
+];
+const OTHER_CLUSTER = "その他の地方";
+
+function orderedCategories(byCategory) {
+  const out = [];
+  const used = new Set();
+  for (const cluster of CLUSTERS) {
+    for (const category of cluster.categories) {
+      if (byCategory.has(category)) {
+        out.push({ cluster: cluster.name, category, tools: byCategory.get(category) });
+        used.add(category);
+      }
+    }
+  }
+  for (const [category, tools] of byCategory) {
+    if (!used.has(category)) out.push({ cluster: OTHER_CLUSTER, category, tools });
+  }
+  return out;
+}
+
 function render() {
   const f = currentFilters();
   const shown = allTools.filter((t) => matches(t, f));
@@ -364,7 +425,15 @@ function render() {
     byCategory.get(t.category).push(t);
   }
 
-  for (const [category, tools] of byCategory) {
+  let lastCluster = null;
+  for (const { cluster, category, tools } of orderedCategories(byCategory)) {
+    if (cluster !== lastCluster) {
+      lastCluster = cluster;
+      const heading = el("div", "region-heading");
+      heading.appendChild(el("span", "region-plate", cluster));
+      heading.appendChild(el("span", "region-road"));
+      groups.appendChild(heading);
+    }
     const section = el("section", "cat-section");
     section.dataset.category = category;
     if (collapsedCategories.has(category)) section.classList.add("collapsed");
@@ -449,18 +518,40 @@ function buildToc(byCategory, shown) {
   if (!nav || !chips) return;
   nav.hidden = shown.length === 0;
   chips.innerHTML = "";
-  sub.textContent = "全" + byCategory.size + "エリア・" + shown.length + "ツール";
+
+  const ordered = orderedCategories(byCategory);
+  const clusterCount = new Set(ordered.map((o) => o.cluster)).size;
+  sub.textContent =
+    "全" + clusterCount + "地方・" + ordered.length + "の街・" + shown.length + "ツール";
 
   const chipByCategory = new Map();
-  for (const [category, tools] of byCategory) {
+  let lastCluster = null;
+  let stop = 0;
+  for (const { cluster, category, tools } of ordered) {
+    if (cluster !== lastCluster) {
+      lastCluster = cluster;
+      const label = el("div", "toc-region-label");
+      if (chipByCategory.size === 0 && stop === 0) label.classList.add("is-first");
+      label.appendChild(el("span", "toc-region-label-text", cluster));
+      chips.appendChild(label);
+    }
+    stop += 1;
     const chip = el("button", "toc-chip");
     chip.type = "button";
+    chip.appendChild(el("span", "toc-stop", String(stop)));
     chip.appendChild(el("span", "toc-chip-name", category));
     chip.appendChild(el("span", "toc-chip-count", String(tools.length)));
     chip.addEventListener("click", () => jumpToCategory(category));
     chips.appendChild(chip);
     chipByCategory.set(category, chip);
   }
+
+  // 街と街を結ぶ道（SVG）をチップの背後に敷く
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.id = "toc-road";
+  svg.setAttribute("aria-hidden", "true");
+  chips.prepend(svg);
+  requestAnimationFrame(drawRoad);
 
   if (tocObserver) tocObserver.disconnect();
   tocObserver = new IntersectionObserver(
@@ -480,11 +571,39 @@ function buildToc(byCategory, shown) {
     .forEach((s) => tocObserver.observe(s));
 }
 
+/* 街（チップ）の中心を順番に結んで、道を描く */
+function drawRoad() {
+  const wrap = document.getElementById("toc-chips");
+  const svg = document.getElementById("toc-road");
+  if (!wrap || !svg) return;
+  const chipEls = [...wrap.querySelectorAll(".toc-chip")];
+  if (chipEls.length < 2) {
+    svg.innerHTML = "";
+    return;
+  }
+  const wr = wrap.getBoundingClientRect();
+  const pts = chipEls.map((ch) => {
+    const r = ch.getBoundingClientRect();
+    return [r.left - wr.left + r.width / 2, r.top - wr.top + r.height / 2];
+  });
+  const d = pts
+    .map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1))
+    .join(" ");
+  svg.setAttribute("viewBox", "0 0 " + wrap.offsetWidth + " " + wrap.offsetHeight);
+  svg.innerHTML =
+    '<path class="road-base" d="' + d + '"/><path class="road-line" d="' + d + '"/>';
+}
+
 function initToc() {
   const dice = document.getElementById("toc-dice");
   const hit = document.getElementById("toc-hit");
   const compass = document.getElementById("toc-compass");
   if (!dice) return;
+  let resizeTimer = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(drawRoad, 150);
+  });
   dice.addEventListener("click", () => {
     if (lastShown.length === 0) return;
     const tool = lastShown[Math.floor(Math.random() * lastShown.length)];
