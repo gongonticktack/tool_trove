@@ -436,6 +436,38 @@ footer {
   stroke-dasharray: 7 7;
   stroke-linejoin: round;
 }
+/* 探検マップの風景バナー（丘・森・家・ビル・道） */
+.toc-scenery {
+  margin-top: 10px;
+  border-radius: 10px;
+  overflow: hidden;
+  line-height: 0;
+}
+.toc-scenery svg { width: 100%; height: 56px; display: block; }
+.sc-sun { fill: var(--accent); opacity: 0.85; }
+.sc-hill-back { fill: color-mix(in srgb, var(--sub) 55%, var(--surface)); }
+.sc-hill-front { fill: color-mix(in srgb, var(--sub) 80%, var(--text) 6%); }
+.sc-tree { fill: color-mix(in srgb, var(--accent) 65%, var(--text)); }
+.sc-tree-round { fill: color-mix(in srgb, var(--accent) 48%, var(--text)); }
+.sc-house { fill: var(--main); opacity: 0.92; }
+.sc-roof { fill: var(--accent); }
+.sc-door { fill: var(--surface); }
+.sc-bldg { fill: color-mix(in srgb, var(--muted) 78%, var(--surface)); }
+.sc-window { fill: var(--surface); opacity: 0.85; }
+.sc-road {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-dasharray: 7 6;
+  opacity: 0.9;
+}
+.toc-region-label-text {
+  display: inline-flex;
+  align-items: center;
+}
+.toc-region-icon { display: inline-flex; margin-right: 5px; }
+.toc-region-icon svg { width: 15px; height: 15px; }
+
 .toc-region-label {
   flex: 0 0 100%;
   position: relative;

@@ -396,6 +396,20 @@ const CLUSTERS = [
 ];
 const OTHER_CLUSTER = "その他の地方";
 
+/* 地方ラベルの風景アイコン */
+const REGION_ICONS = {
+  "3D・ビジョン地方":
+    '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 L19 12 H15.5 L20 18 H4 L8.5 12 H5 Z"/><rect x="10.8" y="18" width="2.4" height="4"/></svg>',
+  "ロボット・物理地方":
+    '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 21 V11 L8 14 V11 L14 14 V6 H17 V21 Z"/><rect x="18.2" y="3" width="2.6" height="5"/></svg>',
+  "AI・データ地方":
+    '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="4" width="9" height="17"/><rect x="15" y="9" width="6" height="12"/></svg>',
+  "自動化・開発地方":
+    '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3 L22 11 H19 V21 H14 V15 H10 V21 H5 V11 H2 Z"/></svg>',
+};
+const REGION_ICON_DEFAULT =
+  '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 20 L9 7 L13 13 L15.5 9 L22 20 Z"/></svg>';
+
 function orderedCategories(byCategory) {
   const out = [];
   const used = new Set();
@@ -533,7 +547,12 @@ function buildToc(byCategory, shown) {
       lastCluster = cluster;
       const label = el("div", "toc-region-label");
       if (chipByCategory.size === 0 && stop === 0) label.classList.add("is-first");
-      label.appendChild(el("span", "toc-region-label-text", cluster));
+      const labelText = el("span", "toc-region-label-text");
+      const icon = el("span", "toc-region-icon");
+      icon.innerHTML = REGION_ICONS[cluster] || REGION_ICON_DEFAULT;
+      labelText.appendChild(icon);
+      labelText.appendChild(document.createTextNode(cluster));
+      label.appendChild(labelText);
       chips.appendChild(label);
     }
     stop += 1;
